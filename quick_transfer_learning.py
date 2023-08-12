@@ -20,7 +20,7 @@ def load_cifar10_batch(file_path):
 # (2) Read training data
 x_train, y_train = [], []
 for i in range(1, 6):
-    file_path = f'/Users/tylerkapp/Downloads/cifar-10-batches-py/data_batch_{i}'
+    file_path = f'cifar-10-batches-py/data_batch_{i}'
     X, Y = load_cifar10_batch(file_path)
     x_train.append(X)
     y_train.append(Y)
@@ -28,7 +28,7 @@ x_train = np.concatenate(x_train)
 y_train = np.concatenate(y_train)
 
 # (3) Read the testing data
-file_path = '/Users/tylerkapp/Downloads/cifar-10-batches-py/test_batch'
+file_path = 'cifar-10-batches-py/test_batch'
 x_test, y_test = load_cifar10_batch(file_path)
 
 # (4) Preprocess the data
