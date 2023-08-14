@@ -53,4 +53,44 @@ def build_gan(generator, discriminator):
     model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
     return model
 
+# Constants
+img_shape = (28, 28, 1)
+z_dim = 100
+batch_size = 64
+epochs = 10000
+
+# Build and compile the generator
+generator = build_generator(z_dim)
+generator.compile(optimizer=Adam(), loss='binary_crossentropy')
+
+# Build and compile the discriminator
+discriminator = build_discriminator(img_shape)
+discriminator.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+
+# Build and compile the GAN
+gan = build_gan(generator, discriminator)
+gan.compile(optimizer=Adam(), loss='binary_crossentropy')
+
+# Training Loop
+for epoch in range(epochs):
+    # Training the Discriminator
+    idx = np.random.randint(0, x_train.shape[0], batch_size)
+    real_imgs = x_train[idx]
+    fake_imgs = generator.predict(np.random.randn(batch_size, z_dim))
+    labels_real = np.ones((batch_size, 1))
+    labels_fake = np.zeros((batch_size, 1))
+    d_loss_real = discriminator.train_on_batch(real_imgs, labels_real)
+    d_loss_fake = discriminator.train_on_batch(fake_imgs, labels_fake)
+    d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
+
+    # Training the Generator
+    noise = np.random.randn(batch_size, z_dim)
+    labels_g = np.ones((batch_size, 1))
+    g_loss = gan.train_on_batch(noise, labels_g)
+
+    # Print progress
+    if epoch % 1000 == 0:
+        print(f"Epoch {epoch}, D Loss: {d_loss[0]}, G Loss: {g_loss}")
+
+
 
